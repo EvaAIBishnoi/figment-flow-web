@@ -10,7 +10,7 @@ import UploadProcess from "./pages/UploadProcess";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
 
-// Create pagination context to track current page
+// Create a QueryClient instance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

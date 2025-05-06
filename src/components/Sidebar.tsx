@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
       display: 'flex',
       flexDirection: 'column'
     }}>
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: '20px', padding: '10px 15px' }}>
         <Link 
           to="/upload" 
           className="kpmg-sidebar-item" 
@@ -34,7 +34,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            padding: '12px 24px',
+            padding: '12px 20px',
+            marginBottom: '8px',
+            borderRadius: '6px',
             transition: 'all 0.2s ease',
             cursor: 'pointer',
             textDecoration: 'none'
@@ -53,7 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            padding: '12px 24px',
+            padding: '12px 20px',
+            borderRadius: '6px',
             transition: 'all 0.2s ease',
             cursor: 'pointer',
             textDecoration: 'none'

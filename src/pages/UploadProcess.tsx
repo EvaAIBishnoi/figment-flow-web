@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -18,6 +19,7 @@ const UploadProcess: React.FC = () => {
   const [processingResult, setProcessingResult] = useState<ProcessingResult | null>(null);
   const [notificationVisible, setNotificationVisible] = useState<boolean>(false);
   const [notificationType, setNotificationType] = useState<'success' | 'error'>('success');
+  const [notificationMessage, setNotificationMessage] = useState<string>('');
 
   // Simulate file upload and processing
   const handleFileUpload = (file: File) => {
@@ -80,6 +82,7 @@ const UploadProcess: React.FC = () => {
       if (isSuccess) {
         setUploadedFile(prev => prev ? { ...prev, status: 'complete' } : null);
         setNotificationType('success');
+        setNotificationMessage('PDF processed successfully');
         setNotificationVisible(true);
         
         // Show the processing results after a delay
@@ -115,6 +118,7 @@ Reference: XYZ`
       } else {
         setUploadedFile(prev => prev ? { ...prev, status: 'error', errorMessage: 'Processing failed' } : null);
         setNotificationType('error');
+        setNotificationMessage('Files could not be uploaded due to an error');
         setNotificationVisible(true);
         toast.error("Files could not be uploaded due to an error");
       }
@@ -128,6 +132,9 @@ Reference: XYZ`
   };
 
   const handleSave = () => {
+    setNotificationType('success');
+    setNotificationMessage('File processed and saved successfully');
+    setNotificationVisible(true);
     toast.success("File processed and saved successfully");
     
     // Navigate to the history page (in a real app, we would use React Router)
@@ -165,7 +172,7 @@ Reference: XYZ`
               position: 'absolute',
               top: '20px',
               right: '20px',
-              backgroundColor: notificationType === 'success' ? '#4CAF50' : '#f44336',
+              backgroundColor: 'white',
               color: 'white',
               padding: '0',
               borderRadius: '4px',
@@ -195,10 +202,7 @@ Reference: XYZ`
                 backgroundColor: 'white',
                 color: '#333'
               }}>
-                {notificationType === 'success' 
-                  ? 'PDF processed successfully' 
-                  : 'Files could not be uploaded due to an error'
-                }
+                {notificationMessage}
               </div>
               <button 
                 onClick={() => setNotificationVisible(false)}

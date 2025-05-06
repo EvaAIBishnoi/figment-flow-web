@@ -10,7 +10,14 @@ import UploadProcess from "./pages/UploadProcess";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Create pagination context to track current page
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -24,6 +31,7 @@ const App = () => (
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/upload" element={<UploadProcess />} />
           <Route path="/history" element={<History />} />
+          <Route path="/history/:page" element={<History />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

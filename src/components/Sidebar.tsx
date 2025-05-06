@@ -29,7 +29,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
           to="/upload" 
           className="kpmg-sidebar-item" 
           style={{ 
-            backgroundColor: pathname.includes('/upload') ? 'rgba(255, 255, 255, 0.1)' : 'transparent'
+            backgroundColor: pathname.includes('/upload') ? '#000000' : 'transparent',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '12px 24px',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+            textDecoration: 'none'
           }}
         >
           <File size={20} />
@@ -40,7 +48,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
           to="/history" 
           className="kpmg-sidebar-item" 
           style={{ 
-            backgroundColor: pathname.includes('/history') ? 'rgba(255, 255, 255, 0.1)' : 'transparent'
+            backgroundColor: pathname.includes('/history') ? '#000000' : 'transparent',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '12px 24px',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer',
+            textDecoration: 'none'
           }}
         >
           <History size={20} />

@@ -17,7 +17,10 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
       justifyContent: 'space-between',
       alignItems: 'center',
       color: 'white',
-      width: '100%'
+      width: '100%',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      position: 'relative',
+      zIndex: 10
     }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button 
@@ -46,6 +49,30 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div style={{ 
+          position: 'relative', 
+          backgroundColor: 'white', 
+          borderRadius: '50%', 
+          width: '40px', 
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <button style={{ 
+            background: 'transparent', 
+            border: 'none', 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%'
+          }}>
+            <User color="#0a2e81" size={20} />
+          </button>
+        </div>
+
         <div style={{ position: 'relative' }}>
           <button style={{ 
             background: 'transparent', 
@@ -71,7 +98,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
             }}
           >
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <User color="white" size={20} />
               <span>ABC</span>
               <ChevronDown color="white" size={16} />
             </span>

@@ -55,13 +55,7 @@ const UploadProcess: React.FC = () => {
   };
 
   const handleRemoveFile = () => {
-    if (uploadedFile && uploadedFile.status === 'uploading') {
-      // If the file is currently uploading, show confirmation
-      setShowDeleteConfirmation(true);
-    } else {
-      // Otherwise just remove it
-      setUploadedFile(null);
-    }
+    setShowDeleteConfirmation(true);
   };
 
   const handleDeleteConfirm = () => {
@@ -173,21 +167,34 @@ Reference: XYZ`
               right: '20px',
               backgroundColor: notificationType === 'success' ? '#4CAF50' : '#f44336',
               color: 'white',
-              padding: '15px 20px',
+              padding: '0',
               borderRadius: '4px',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
               boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
               zIndex: 100,
-              maxWidth: '400px'
+              maxWidth: '400px',
+              overflow: 'hidden'
             }}>
-              {notificationType === 'success' ? (
-                <CheckCircle2 size={20} />
-              ) : (
-                <X size={20} />
-              )}
-              <div style={{ flex: 1 }}>
+              <div style={{
+                padding: '15px',
+                backgroundColor: notificationType === 'success' ? '#4CAF50' : '#f44336',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {notificationType === 'success' ? (
+                  <CheckCircle2 size={20} color="white" />
+                ) : (
+                  <X size={20} color="white" />
+                )}
+              </div>
+              <div style={{ 
+                flex: 1, 
+                padding: '15px 10px',
+                backgroundColor: 'white',
+                color: '#333'
+              }}>
                 {notificationType === 'success' 
                   ? 'PDF processed successfully' 
                   : 'Files could not be uploaded due to an error'
@@ -198,9 +205,13 @@ Reference: XYZ`
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: 'white',
+                  color: '#333',
                   cursor: 'pointer',
-                  padding: '5px'
+                  padding: '15px',
+                  backgroundColor: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 <X size={16} />

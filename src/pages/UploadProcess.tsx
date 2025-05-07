@@ -1,13 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import FileTypeSelector from '../components/FileTypeSelector';
-import FileUpload from '../components/FileUpload';
 import DeleteConfirmation from '../components/DeleteConfirmation';
 import ProcessingResults from '../components/ProcessingResults';
+import UploadSection from '../components/UploadSection';
+import Notification from '../components/Notification';
 import { FileType, UploadedFile, ProcessingResult } from '../types';
 
 const UploadProcess: React.FC = () => {
@@ -142,17 +141,6 @@ Reference: XYZ`
     }, 1500);
   };
 
-  // Auto hide notification after 5 seconds
-  useEffect(() => {
-    if (notificationVisible) {
-      const timer = setTimeout(() => {
-        setNotificationVisible(false);
-      }, 5000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [notificationVisible]);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
@@ -166,63 +154,12 @@ Reference: XYZ`
           backgroundColor: '#f8f9fa',
           position: 'relative'
         }}>
-          {notificationVisible && (
-            <div style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              backgroundColor: 'white',
-              padding: '0',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-              zIndex: 100,
-              maxWidth: '400px',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                padding: '15px',
-                backgroundColor: notificationType === 'success' ? '#4CAF50' : '#f44336',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderTopLeftRadius: '8px',
-                borderBottomLeftRadius: '8px',
-                height: '100%'
-              }}>
-                {notificationType === 'success' ? (
-                  <CheckCircle2 size={20} color="white" />
-                ) : (
-                  <X size={20} color="white" />
-                )}
-              </div>
-              <div style={{ 
-                flex: 1, 
-                padding: '15px 10px',
-                backgroundColor: 'white',
-                color: '#333'
-              }}>
-                {notificationMessage}
-              </div>
-              <button 
-                onClick={() => setNotificationVisible(false)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#333',
-                  cursor: 'pointer',
-                  padding: '15px',
-                  backgroundColor: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <X size={16} />
-              </button>
-            </div>
-          )}
+          <Notification 
+            visible={notificationVisible} 
+            type={notificationType} 
+            message={notificationMessage} 
+            onClose={() => setNotificationVisible(false)} 
+          />
 
           <h1 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Upload and Process</h1>
           
@@ -233,45 +170,15 @@ Reference: XYZ`
               onSave={handleSave} 
             />
           ) : (
-            <>
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Select file type</label>
-                <div style={{ maxWidth: '400px' }}>
-                  <FileTypeSelector 
-                    selectedType={selectedFileType} 
-                    onChange={setSelectedFileType} 
-                  />
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: '1.5rem' }}>
-                <FileUpload 
-                  onFileUpload={handleFileUpload}
-                  uploadedFile={uploadedFile}
-                  onRemoveFile={handleRemoveFile}
-                />
-              </div>
-              
-              <div>
-                <button
-                  onClick={handleProcessNotification}
-                  disabled={!uploadedFile || isProcessing}
-                  style={{
-                    padding: '0.75rem 2rem',
-                    backgroundColor: !uploadedFile || isProcessing ? '#a0aec0' : '#0a2e81',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.25rem',
-                    cursor: !uploadedFile || isProcessing ? 'not-allowed' : 'pointer',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    transition: 'background-color 0.2s'
-                  }}
-                >
-                  {isProcessing ? 'Processing...' : 'Process notification'}
-                </button>
-              </div>
-            </>
+            <UploadSection
+              selectedFileType={selectedFileType}
+              setSelectedFileType={setSelectedFileType}
+              uploadedFile={uploadedFile}
+              handleFileUpload={handleFileUpload}
+              handleRemoveFile={handleRemoveFile}
+              handleProcessNotification={handleProcessNotification}
+              isProcessing={isProcessing}
+            />
           )}
         </main>
       </div>

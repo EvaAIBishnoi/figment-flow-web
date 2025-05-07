@@ -135,9 +135,8 @@ Reference: XYZ`
     setNotificationType('success');
     setNotificationMessage('File processed and saved successfully');
     setNotificationVisible(true);
-    toast.success("File processed and saved successfully");
     
-    // Navigate to the history page (in a real app, we would use React Router)
+    // Navigate to the history page after a delay
     setTimeout(() => {
       window.location.href = '/history';
     }, 1500);
@@ -173,9 +172,8 @@ Reference: XYZ`
               top: '20px',
               right: '20px',
               backgroundColor: 'white',
-              color: 'white',
               padding: '0',
-              borderRadius: '4px',
+              borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
               boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
@@ -188,7 +186,10 @@ Reference: XYZ`
                 backgroundColor: notificationType === 'success' ? '#4CAF50' : '#f44336',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                borderTopLeftRadius: '8px',
+                borderBottomLeftRadius: '8px',
+                height: '100%'
               }}>
                 {notificationType === 'success' ? (
                   <CheckCircle2 size={20} color="white" />

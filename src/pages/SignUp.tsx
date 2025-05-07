@@ -46,7 +46,7 @@ const SignUp: React.FC = () => {
         <img 
           src="https://upload.wikimedia.org/wikipedia/commons/9/9d/KPMG_logo.svg" 
           alt="KPMG Logo" 
-          style={{ height: '30px' }} 
+          style={{ height: '40px', filter: 'brightness(0) invert(1)' }} 
         />
       </div>
 

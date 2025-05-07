@@ -74,18 +74,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
         </div>
 
         <div style={{ position: 'relative' }}>
-          <button style={{ 
-            background: 'transparent', 
-            border: 'none', 
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
-            <Bell color="white" fill="white" size={20} />
-          </button>
-        </div>
-
-        <div style={{ position: 'relative' }}>
           <button 
             onClick={() => setDropdownOpen(!dropdownOpen)}
             style={{ 
@@ -163,6 +151,18 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
               </ul>
             </div>
           )}
+        </div>
+
+        <div style={{ position: 'relative' }}>
+          <button style={{ 
+            background: 'transparent', 
+            border: 'none', 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <Bell color="white" fill="white" size={20} />
+          </button>
         </div>
       </div>
     </header>

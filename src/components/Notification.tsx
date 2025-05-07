@@ -28,21 +28,25 @@ const Notification: React.FC<NotificationProps> = ({ visible, type, message, onC
       position: 'absolute',
       top: '20px',
       right: '20px',
-      backgroundColor: type === 'success' ? '#4CAF50' : '#f44336',
+      backgroundColor: 'white',
+      padding: '0',
       borderRadius: '8px',
       display: 'flex',
       alignItems: 'center',
       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
       zIndex: 100,
       maxWidth: '400px',
-      overflow: 'hidden',
-      color: 'white'
+      overflow: 'hidden'
     }}>
       <div style={{
         padding: '15px',
+        backgroundColor: type === 'success' ? '#4CAF50' : '#f44336',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        borderTopLeftRadius: '8px',
+        borderBottomLeftRadius: '8px',
+        height: '100%'
       }}>
         {type === 'success' ? (
           <CheckCircle2 size={20} color="white" />
@@ -53,6 +57,8 @@ const Notification: React.FC<NotificationProps> = ({ visible, type, message, onC
       <div style={{ 
         flex: 1, 
         padding: '15px 10px',
+        backgroundColor: 'white',
+        color: '#333'
       }}>
         {message}
       </div>
@@ -61,9 +67,10 @@ const Notification: React.FC<NotificationProps> = ({ visible, type, message, onC
         style={{
           background: 'transparent',
           border: 'none',
-          color: 'white',
+          color: '#333',
           cursor: 'pointer',
           padding: '15px',
+          backgroundColor: 'white',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'

@@ -19,8 +19,9 @@ const UploadProcess: React.FC = () => {
   const [notificationVisible, setNotificationVisible] = useState<boolean>(false);
   const [notificationType, setNotificationType] = useState<'success' | 'error'>('success');
   const [notificationMessage, setNotificationMessage] = useState<string>('');
+  const [uploadStarted, setUploadStarted] = useState<boolean>(false);
 
-  // Simulate file upload and processing
+  // Simulate file selection
   const handleFileUpload = (file: File) => {
     const newFile: UploadedFile = {
       id: Date.now().toString(),
@@ -52,7 +53,12 @@ const UploadProcess: React.FC = () => {
     // Cleanup interval
     setTimeout(() => {
       clearInterval(interval);
+      setUploadStarted(false); // Reset upload started flag
     }, 3500);
+  };
+
+  const handleUploadStart = () => {
+    setUploadStarted(true);
   };
 
   const handleRemoveFile = () => {
@@ -69,7 +75,7 @@ const UploadProcess: React.FC = () => {
   };
 
   const handleProcessNotification = () => {
-    if (!uploadedFile) return;
+    if (!uploadedFile || uploadedFile.status !== 'uploaded') return;
     
     setIsProcessing(true);
     
@@ -141,6 +147,9 @@ Reference: XYZ`
     }, 1500);
   };
 
+  // Determine if the process button should be disabled
+  const isProcessButtonDisabled = !uploadedFile || uploadedFile.status !== 'uploaded' || uploadStarted;
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
@@ -178,6 +187,9 @@ Reference: XYZ`
               handleRemoveFile={handleRemoveFile}
               handleProcessNotification={handleProcessNotification}
               isProcessing={isProcessing}
+              isProcessButtonDisabled={isProcessButtonDisabled}
+              handleUploadStart={handleUploadStart}
+              uploadStarted={uploadStarted}
             />
           )}
         </main>

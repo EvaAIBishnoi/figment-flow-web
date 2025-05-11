@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Loader } from 'lucide-react';
 
 interface ProcessButtonProps {
   onClick: () => void;
@@ -21,9 +22,13 @@ const ProcessButton: React.FC<ProcessButtonProps> = ({ onClick, disabled, isProc
         cursor: disabled || isProcessing ? 'not-allowed' : 'pointer',
         fontSize: '0.875rem',
         fontWeight: '500',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
         transition: 'background-color 0.2s'
       }}
     >
+      {isProcessing && <Loader className="animate-spin" size={18} />}
       {isProcessing ? 'Processing...' : 'Process notification'}
     </button>
   );

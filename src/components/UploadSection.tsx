@@ -13,6 +13,9 @@ interface UploadSectionProps {
   handleRemoveFile: () => void;
   handleProcessNotification: () => void;
   isProcessing: boolean;
+  isProcessButtonDisabled: boolean;
+  handleUploadStart: () => void;
+  uploadStarted: boolean;
 }
 
 const UploadSection: React.FC<UploadSectionProps> = ({
@@ -22,7 +25,10 @@ const UploadSection: React.FC<UploadSectionProps> = ({
   handleFileUpload,
   handleRemoveFile,
   handleProcessNotification,
-  isProcessing
+  isProcessing,
+  isProcessButtonDisabled,
+  handleUploadStart,
+  uploadStarted
 }) => {
   return (
     <>
@@ -41,13 +47,14 @@ const UploadSection: React.FC<UploadSectionProps> = ({
           onFileUpload={handleFileUpload}
           uploadedFile={uploadedFile}
           onRemoveFile={handleRemoveFile}
+          onUploadStart={handleUploadStart}
         />
       </div>
       
       <div>
         <ProcessButton 
           onClick={handleProcessNotification} 
-          disabled={!uploadedFile} 
+          disabled={isProcessButtonDisabled} 
           isProcessing={isProcessing}
         />
       </div>

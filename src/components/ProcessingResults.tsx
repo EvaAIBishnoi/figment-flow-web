@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronDown, Calendar } from 'lucide-react';
 import { ProcessingResult } from '../types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface ProcessingResultsProps {
   result: ProcessingResult;
@@ -11,9 +12,38 @@ interface ProcessingResultsProps {
 
 const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, onSave }) => {
   const [notificationType, setNotificationType] = useState<string>(result.notificationType);
-  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState<boolean>(false);
+  const [taxId, setTaxId] = useState<string>(result.extractedEntities.taxId);
+  const [amount, setAmount] = useState<string>(result.extractedEntities.amount);
+  const [date, setDate] = useState<string>(result.extractedEntities.date);
+  const [reference, setReference] = useState<string>(result.extractedEntities.reference);
+  const [formValid, setFormValid] = useState<boolean>(false);
   
   const notificationTypes = ['Audit request', 'Tax Request', 'General Notice'];
+
+  // Format amount to include $ and parentheses
+  const formatAmount = (value: string): string => {
+    // Remove any non-numeric characters except decimal point
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    if (numericValue === '') return '';
+    return `($${numericValue})`;
+  };
+
+  // Handle amount input changes
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/[^0-9.]/g, '');
+    setAmount(rawValue);
+  };
+
+  // Check if all required fields are filled
+  useEffect(() => {
+    setFormValid(
+      taxId.trim() !== '' && 
+      amount.trim() !== '' && 
+      date.trim() !== '' && 
+      reference.trim() !== ''
+    );
+  }, [taxId, amount, date, reference]);
 
   return (
     <div>
@@ -61,59 +91,19 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
             Notification type (Correct as per requirement)
           </label>
           <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                backgroundColor: 'white',
-                border: '1px solid #e2e8f0',
-                borderRadius: '0.375rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
-              }}
+            <Select 
+              defaultValue={notificationType} 
+              onValueChange={setNotificationType}
             >
-              <span>{notificationType}</span>
-              <ChevronDown size={16} />
-            </button>
-
-            {isTypeDropdownOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                width: '100%',
-                backgroundColor: 'white',
-                border: '1px solid #e2e8f0',
-                borderRadius: '0.375rem',
-                marginTop: '0.25rem',
-                zIndex: 10,
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                maxHeight: '200px',
-                overflowY: 'auto'
-              }}>
+              <SelectTrigger className="w-full h-[45px]">
+                <SelectValue placeholder="Select notification type" />
+              </SelectTrigger>
+              <SelectContent>
                 {notificationTypes.map((type) => (
-                  <div
-                    key={type}
-                    onClick={() => {
-                      setNotificationType(type);
-                      setIsTypeDropdownOpen(false);
-                    }}
-                    style={{
-                      padding: '0.75rem 1rem',
-                      cursor: 'pointer',
-                      backgroundColor: type === notificationType ? '#f7fafc' : 'transparent',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    {type}
-                  </div>
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
-              </div>
-            )}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -139,14 +129,16 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
             <input
               id="taxId"
               type="text"
-              defaultValue={result.extractedEntities.taxId}
+              value={taxId}
+              onChange={(e) => setTaxId(e.target.value)}
               placeholder="Enter Tax ID"
               style={{
                 width: '100%',
                 padding: '0.75rem 1rem',
                 border: '1px solid #e2e8f0',
                 borderRadius: '0.375rem',
-                fontSize: '0.875rem'
+                fontSize: '0.875rem',
+                height: '45px'
               }}
             />
           </div>
@@ -158,14 +150,16 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
             <input
               id="amount"
               type="text"
-              defaultValue={result.extractedEntities.amount}
+              value={formatAmount(amount)}
+              onChange={handleAmountChange}
               placeholder="Enter amount"
               style={{
                 width: '100%',
                 padding: '0.75rem 1rem',
                 border: '1px solid #e2e8f0',
                 borderRadius: '0.375rem',
-                fontSize: '0.875rem'
+                fontSize: '0.875rem',
+                height: '45px'
               }}
             />
           </div>
@@ -184,7 +178,8 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
               <input
                 id="date"
                 type="text"
-                defaultValue={result.extractedEntities.date}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
                 placeholder="Select date"
                 style={{
                   width: '100%',
@@ -192,7 +187,8 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
                   paddingRight: '2.5rem',
                   border: '1px solid #e2e8f0',
                   borderRadius: '0.375rem',
-                  fontSize: '0.875rem'
+                  fontSize: '0.875rem',
+                  height: '45px'
                 }}
               />
               <span style={{ 
@@ -214,14 +210,16 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
             <input
               id="reference"
               type="text"
-              defaultValue={result.extractedEntities.reference}
+              value={reference}
+              onChange={(e) => setReference(e.target.value)}
               placeholder="Enter reference ID"
               style={{
                 width: '100%',
                 padding: '0.75rem 1rem',
                 border: '1px solid #e2e8f0',
                 borderRadius: '0.375rem',
-                fontSize: '0.875rem'
+                fontSize: '0.875rem',
+                height: '45px'
               }}
             />
           </div>
@@ -242,8 +240,8 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
 
 ${result.generatedResponse.body}
 
-Tax ID: 12345
-Reference: XYZ`}
+Tax ID: ${taxId || '12345'}
+Reference: ${reference || 'XYZ'}`}
             style={{
               width: '100%',
               minHeight: '200px',
@@ -261,13 +259,14 @@ Reference: XYZ`}
       <div>
         <button
           onClick={onSave}
+          disabled={!formValid}
           style={{
             padding: '0.75rem 2rem',
-            backgroundColor: '#0a2e81',
+            backgroundColor: formValid ? '#0a2e81' : '#a0aec0',
             color: 'white',
             border: 'none',
             borderRadius: '0.25rem',
-            cursor: 'pointer',
+            cursor: formValid ? 'pointer' : 'not-allowed',
             fontSize: '0.875rem',
             fontWeight: '500'
           }}

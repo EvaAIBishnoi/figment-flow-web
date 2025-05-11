@@ -1,5 +1,6 @@
+
 import React, { useCallback, useState, useRef } from 'react';
-import { X, Upload, AlertTriangle } from 'lucide-react';
+import { X, Upload, AlertTriangle, FileCheck } from 'lucide-react';
 import { UploadedFile } from '../types';
 import { Progress } from './ui/progress';
 
@@ -19,6 +20,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [networkError, setNetworkError] = useState<boolean>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -47,6 +49,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       const file = e.dataTransfer.files[0];
       setSelectedFile(file);
       setNetworkError(false);
+      setUploadSuccess(false);
     }
   }, []);
 
@@ -55,6 +58,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       const file = e.target.files[0];
       setSelectedFile(file);
       setNetworkError(false);
+      setUploadSuccess(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';  // Reset the input
       }
@@ -70,13 +74,17 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const handleUploadClick = useCallback(() => {
     if (selectedFile) {
       onUploadStart();
-      // Simulate a potential network error (10% chance)
+      // Simulate a successful upload (90% chance) or error (10% chance)
       if (Math.random() < 0.1) {
         setTimeout(() => {
           setNetworkError(true);
         }, 1000);
         return;
       }
+      // Show success state
+      setTimeout(() => {
+        setUploadSuccess(true);
+      }, 2000);
       onFileUpload(selectedFile);
       setSelectedFile(null);
     }
@@ -96,6 +104,23 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   const renderUploadContent = () => {
+    // Show success message if upload completed
+    if (uploadSuccess && uploadedFile && uploadedFile.progress === 100) {
+      return (
+        <div style={{ textAlign: 'center', color: '#4CAF50' }}>
+          <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+            <FileCheck size={40} color="#4CAF50" />
+          </div>
+          <p style={{ marginBottom: '1rem', fontSize: '1rem', color: '#4CAF50', fontWeight: '500' }}>
+            PDF uploaded successfully
+          </p>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            You can now process the file
+          </p>
+        </div>
+      );
+    }
+
     // Show error message if network error
     if (networkError) {
       return (

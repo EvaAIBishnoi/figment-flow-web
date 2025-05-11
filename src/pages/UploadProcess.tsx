@@ -54,12 +54,6 @@ const UploadProcess: React.FC = () => {
     setTimeout(() => {
       clearInterval(interval);
       setUploadStarted(false); // Reset upload started flag
-      
-      // Show success notification when upload completes
-      setNotificationType('success');
-      setNotificationMessage('PDF uploaded successfully');
-      setNotificationVisible(true);
-      toast.success("PDF uploaded successfully");
     }, 3500);
   };
 
@@ -129,9 +123,9 @@ Reference: XYZ`
       } else {
         setUploadedFile(prev => prev ? { ...prev, status: 'error', errorMessage: 'Processing failed' } : null);
         setNotificationType('error');
-        setNotificationMessage('PDF processing failed. Please try again.');
+        setNotificationMessage('Files could not be uploaded due to an error');
         setNotificationVisible(true);
-        toast.error("PDF processing failed. Please try again.");
+        toast.error("Files could not be uploaded due to an error");
       }
       
       setIsProcessing(false);

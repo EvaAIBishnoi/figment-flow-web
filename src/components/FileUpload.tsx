@@ -1,5 +1,6 @@
+
 import React, { useCallback, useState, useRef } from 'react';
-import { X, Upload, AlertTriangle } from 'lucide-react';
+import { X, Upload, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { UploadedFile } from '../types';
 import { Progress } from './ui/progress';
 
@@ -255,7 +256,12 @@ const FileUpload: React.FC<FileUploadProps> = ({
           <Progress 
             value={uploadedFile.progress} 
             className="h-2 w-full"
-            style={{ backgroundColor: '#e2e8f0' }}
+            style={{ 
+              backgroundColor: '#e2e8f0',
+              ...(uploadedFile.status === 'error' ? { 
+                '& > div': { backgroundColor: '#f44336' } 
+              } : {})
+            }}
           />
           
           <div style={{ 
@@ -268,7 +274,12 @@ const FileUpload: React.FC<FileUploadProps> = ({
             <span>
               {uploadedFile.status === 'error' 
                 ? 'Upload failed. Please upload a new file and try again' 
-                : `${uploadedFile.progress}% complete`
+                : uploadedFile.status === 'uploaded' 
+                  ? <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#4CAF50' }}>
+                      <CheckCircle2 size={14} color="#4CAF50" />
+                      <span>Upload complete</span>
+                    </div>
+                  : `${uploadedFile.progress}% complete`
               }
             </span>
             {uploadedFile.status === 'error' && (

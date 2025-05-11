@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronDown, Calendar } from 'lucide-react';
+import { ChevronLeft, Calendar } from 'lucide-react';
 import { ProcessingResult } from '../types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
@@ -26,7 +26,7 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
     const numericValue = value.replace(/[^0-9.]/g, '');
     
     if (numericValue === '') return '';
-    return `($${numericValue})`;
+    return `(${numericValue})`;
   };
 
   // Handle amount input changes
@@ -90,12 +90,12 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
           <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
             Notification type (Correct as per requirement)
           </label>
-          <div style={{ position: 'relative' }}>
+          <div style={{ maxWidth: '100%' }}>
             <Select 
               defaultValue={notificationType} 
               onValueChange={setNotificationType}
             >
-              <SelectTrigger className="w-full h-[45px]">
+              <SelectTrigger className="w-full h-[45px] px-3 text-sm">
                 <SelectValue placeholder="Select notification type" />
               </SelectTrigger>
               <SelectContent>
@@ -145,12 +145,12 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
 
           <div>
             <label htmlFor="amount" style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
-              Amount <span style={{ color: 'red' }}>*</span>
+              Amount ($) <span style={{ color: 'red' }}>*</span>
             </label>
             <input
               id="amount"
               type="text"
-              value={formatAmount(amount)}
+              value={amount}
               onChange={handleAmountChange}
               placeholder="Enter amount"
               style={{

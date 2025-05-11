@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState, useRef } from 'react';
 import { X, Upload, AlertTriangle } from 'lucide-react';
 import { UploadedFile } from '../types';
@@ -255,9 +254,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
           <Progress 
             value={uploadedFile.progress} 
-            className="h-2 w-full" 
-            style={{ backgroundColor: '#e2e8f0' }} 
-            indicatorStyle={{ backgroundColor: getUploadStatusColor() }} 
+            className="h-2 w-full"
+            style={{ backgroundColor: '#e2e8f0' }}
           />
           
           <div style={{ 

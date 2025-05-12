@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Calendar as CalendarIcon, X } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon, X, Check, ChevronDown } from 'lucide-react';
 import { ProcessingResult } from '../types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -8,7 +8,7 @@ import { Calendar } from './ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '../lib/utils';
 import { Checkbox } from './ui/checkbox';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Badge } from './ui/badge';
 
 interface ProcessingResultsProps {
   result: ProcessingResult;
@@ -279,7 +279,7 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
         </div>
       </div>
 
-      {/* Response choices section */}
+      {/* Response choices section - Updated to match the provided design */}
       <div style={{ 
         border: '1px solid #e2e8f0', 
         borderRadius: '0.375rem', 
@@ -293,107 +293,64 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
             Response choices <span style={{ color: 'red' }}>*</span>
           </label>
           
-          {/* Custom multi-select dropdown */}
-          <div style={{ position: 'relative' }}>
+          <div className="relative">
             <div 
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '0.375rem',
-                fontSize: '0.875rem',
-                minHeight: '45px',
-                cursor: 'pointer',
-                backgroundColor: 'white',
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
-            >
-              {selectedChoices.length > 0 ? (
-                selectedChoices.map(choice => (
-                  <div 
-                    key={choice}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                      backgroundColor: '#f1f5f9',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '0.75rem'
-                    }}
-                  >
-                    {choice}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeChoice(choice);
-                      }}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        padding: '0',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <span style={{ color: '#94a3b8' }}>Select response</span>
+              className={cn(
+                "flex flex-wrap min-h-[45px] w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                selectedChoices.length > 0 ? "pl-3" : "text-muted-foreground"
               )}
+              role="button"
+              aria-expanded={dropdownOpen}
+              aria-controls="response-choices-dropdown"
+            >
+              <div className="flex flex-wrap gap-1 items-center">
+                {selectedChoices.length > 0 ? (
+                  selectedChoices.map(choice => (
+                    <Badge 
+                      key={choice} 
+                      variant="outline"
+                      className="flex items-center gap-1 py-1 px-2 bg-gray-100 text-gray-700"
+                    >
+                      {choice}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeChoice(choice);
+                        }}
+                        className="ml-1 h-4 w-4 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none flex items-center justify-center"
+                        aria-label={`Remove ${choice}`}
+                      >
+                        <X size={14} />
+                      </button>
+                    </Badge>
+                  ))
+                ) : (
+                  <span>Select response</span>
+                )}
+              </div>
+              <ChevronDown className="h-4 w-4 opacity-50" />
             </div>
             
             {dropdownOpen && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 'calc(100% + 5px)',
-                  left: 0,
-                  width: '100%',
-                  backgroundColor: 'white',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '0.375rem',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                  zIndex: 50
-                }}
+              <div 
+                id="response-choices-dropdown"
+                className="absolute z-50 w-full mt-1 bg-popover text-popover-foreground rounded-md border shadow-md"
               >
-                {responseChoices.map(choice => (
-                  <div 
-                    key={choice}
-                    onClick={() => toggleResponseChoice(choice)}
-                    style={{
-                      padding: '0.75rem 1rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}
-                  >
+                <div className="p-1">
+                  {responseChoices.map((choice) => (
                     <div 
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '2px',
-                        backgroundColor: selectedChoices.includes(choice) ? '#1e40af' : 'white',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white'
-                      }}
+                      key={choice}
+                      onClick={() => toggleResponseChoice(choice)}
+                      className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-3 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
                     >
-                      {selectedChoices.includes(choice) && <span style={{ fontSize: '10px' }}>✓</span>}
+                      <div className="mr-2 h-4 w-4 flex items-center justify-center rounded border border-primary">
+                        {selectedChoices.includes(choice) && <Check className="h-3 w-3 text-primary" />}
+                      </div>
+                      <span>{choice}</span>
                     </div>
-                    <span>{choice}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>

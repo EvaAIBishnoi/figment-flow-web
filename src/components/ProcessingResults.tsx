@@ -1,8 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Calendar } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon } from 'lucide-react';
 import { ProcessingResult } from '../types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Calendar } from './ui/calendar';
+import { format } from 'date-fns';
+import { cn } from '../lib/utils';
 
 interface ProcessingResultsProps {
   result: ProcessingResult;
@@ -15,6 +19,9 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
   const [taxId, setTaxId] = useState<string>(result.extractedEntities.taxId);
   const [amount, setAmount] = useState<string>(result.extractedEntities.amount);
   const [date, setDate] = useState<string>(result.extractedEntities.date);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    date ? new Date(date) : undefined
+  );
   const [reference, setReference] = useState<string>(result.extractedEntities.reference);
   const [formValid, setFormValid] = useState<boolean>(false);
   
@@ -33,6 +40,14 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9.]/g, '');
     setAmount(rawValue);
+  };
+
+  // Handle date selection
+  const handleDateSelect = (selected: Date | undefined) => {
+    setSelectedDate(selected);
+    if (selected) {
+      setDate(format(selected, 'yyyy-MM-dd'));
+    }
   };
 
   // Check if all required fields are filled
@@ -174,33 +189,48 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
             <label htmlFor="date" style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
               Date <span style={{ color: 'red' }}>*</span>
             </label>
-            <div style={{ position: 'relative' }}>
-              <input
-                id="date"
-                type="text"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                placeholder="Select date"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  paddingRight: '2.5rem',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '0.375rem',
-                  fontSize: '0.875rem',
-                  height: '45px'
-                }}
-              />
-              <span style={{ 
-                position: 'absolute',
-                top: '50%',
-                right: '1rem',
-                transform: 'translateY(-50%)',
-                pointerEvents: 'none'
-              }}>
-                <Calendar size={16} />
-              </span>
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    id="date"
+                    type="text"
+                    value={selectedDate ? format(selectedDate, 'dd/MM/yyyy') : ''}
+                    readOnly
+                    placeholder="Select date"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      paddingRight: '2.5rem',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      height: '45px',
+                      cursor: 'pointer',
+                      backgroundColor: 'white'
+                    }}
+                  />
+                  <span style={{ 
+                    position: 'absolute',
+                    top: '50%',
+                    right: '1rem',
+                    transform: 'translateY(-50%)',
+                    pointerEvents: 'none'
+                  }}>
+                    <CalendarIcon size={16} />
+                  </span>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateSelect}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto z-50")}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div>

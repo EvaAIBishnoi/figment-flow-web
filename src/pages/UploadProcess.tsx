@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import DeleteConfirmation from '../components/DeleteConfirmation';
-import { useFileUploadProcess } from '../hooks/useFileUploadProcess';
+import { useFileUploadProcessWithMistral } from '../hooks/useFileUploadProcessWithMistral';
 import UploadProcessContainer from '../components/UploadProcessContainer';
 
 const UploadProcess: React.FC = () => {
@@ -29,7 +29,7 @@ const UploadProcess: React.FC = () => {
     notificationType,
     notificationMessage,
     setNotificationVisible
-  } = useFileUploadProcess();
+  } = useFileUploadProcessWithMistral();
 
   const handleDeleteConfirm = () => {
     handleRemoveFile();

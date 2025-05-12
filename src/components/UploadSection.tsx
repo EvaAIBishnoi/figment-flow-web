@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FileTypeSelector from './FileTypeSelector';
 import FileUpload from './FileUpload';
 import ProcessButton from './ProcessButton';
+import ApiKeyInput from './ApiKeyInput';
 import { FileType, UploadedFile } from '../types';
 
 interface UploadSectionProps {
@@ -30,11 +31,27 @@ const UploadSection: React.FC<UploadSectionProps> = ({
   handleUploadStart,
   uploadStarted
 }) => {
+  const [apiKey, setApiKey] = useState<string>('');
+  
+  // Load API key from localStorage on component mount
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('mistral-api-key');
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+    }
+  }, []);
+
+  const handleApiKeySet = (key: string) => {
+    setApiKey(key);
+  };
+
   return (
     <>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Select file type</label>
-        <div style={{ maxWidth: '400px' }}>
+      <ApiKeyInput onApiKeySet={handleApiKeySet} />
+      
+      <div className="mb-6">
+        <label className="block mb-2">Select file type</label>
+        <div className="max-w-md">
           <FileTypeSelector 
             selectedType={selectedFileType} 
             onChange={setSelectedFileType} 
@@ -42,7 +59,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
         </div>
       </div>
       
-      <div style={{ marginBottom: '1.5rem' }}>
+      <div className="mb-6">
         <FileUpload 
           onFileUpload={handleFileUpload}
           uploadedFile={uploadedFile}
@@ -54,9 +71,14 @@ const UploadSection: React.FC<UploadSectionProps> = ({
       <div>
         <ProcessButton 
           onClick={handleProcessNotification} 
-          disabled={isProcessButtonDisabled} 
+          disabled={isProcessButtonDisabled || !apiKey} 
           isProcessing={isProcessing}
         />
+        {!apiKey && uploadedFile && (
+          <p className="text-sm text-amber-600 mt-2">
+            Please set your Mistral API key before processing the document.
+          </p>
+        )}
       </div>
     </>
   );

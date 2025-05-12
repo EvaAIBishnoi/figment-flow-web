@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
   }
 
   return (
-    <div className="fixed top-[64px] left-0 bottom-0 w-[240px] bg-[#0a2e81] flex flex-col z-10 h-[calc(100vh-64px)]">
+    <div className="fixed top-[64px] left-0 bottom-0 w-[240px] bg-[#0a2e81] flex flex-col z-10 h-[calc(100vh-64px)] border-t border-[#0a2e81]">
       <div className="flex-1 overflow-y-auto p-4">
         <Link 
           to="/upload" 

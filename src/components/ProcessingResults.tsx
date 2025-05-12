@@ -1,12 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon, X } from 'lucide-react';
 import { ProcessingResult } from '../types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Calendar } from './ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '../lib/utils';
+import { Checkbox } from './ui/checkbox';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 interface ProcessingResultsProps {
   result: ProcessingResult;
@@ -24,6 +26,11 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
   );
   const [reference, setReference] = useState<string>(result.extractedEntities.reference);
   const [formValid, setFormValid] = useState<boolean>(false);
+  
+  // Response choices
+  const [selectedChoices, setSelectedChoices] = useState<string[]>([]);
+  const responseChoices = ['Acknowledgement', 'Detailed response'];
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   
   const notificationTypes = ['Audit request', 'Tax Request', 'General Notice'];
 
@@ -48,6 +55,22 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
     if (selected) {
       setDate(format(selected, 'yyyy-MM-dd'));
     }
+  };
+
+  // Handle response choice selection
+  const toggleResponseChoice = (choice: string) => {
+    setSelectedChoices(prev => {
+      if (prev.includes(choice)) {
+        return prev.filter(item => item !== choice);
+      } else {
+        return [...prev, choice];
+      }
+    });
+  };
+
+  // Remove a selected choice
+  const removeChoice = (choice: string) => {
+    setSelectedChoices(prev => prev.filter(item => item !== choice));
   };
 
   // Check if all required fields are filled
@@ -252,6 +275,127 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
                 height: '45px'
               }}
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Response choices section */}
+      <div style={{ 
+        border: '1px solid #e2e8f0', 
+        borderRadius: '0.375rem', 
+        padding: '1.5rem',
+        backgroundColor: 'white',
+        marginBottom: '1.5rem'
+      }}>
+        <h3 style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '1rem' }}>Response choices</h3>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+            Response choices <span style={{ color: 'red' }}>*</span>
+          </label>
+          
+          {/* Custom multi-select dropdown */}
+          <div style={{ position: 'relative' }}>
+            <div 
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                border: '1px solid #e2e8f0',
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                minHeight: '45px',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              {selectedChoices.length > 0 ? (
+                selectedChoices.map(choice => (
+                  <div 
+                    key={choice}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      backgroundColor: '#f1f5f9',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    {choice}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeChoice(choice);
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        padding: '0',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <span style={{ color: '#94a3b8' }}>Select response</span>
+              )}
+            </div>
+            
+            {dropdownOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 5px)',
+                  left: 0,
+                  width: '100%',
+                  backgroundColor: 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '0.375rem',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  zIndex: 50
+                }}
+              >
+                {responseChoices.map(choice => (
+                  <div 
+                    key={choice}
+                    onClick={() => toggleResponseChoice(choice)}
+                    style={{
+                      padding: '0.75rem 1rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    <div 
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                        border: '1px solid #cbd5e1',
+                        borderRadius: '2px',
+                        backgroundColor: selectedChoices.includes(choice) ? '#1e40af' : 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white'
+                      }}
+                    >
+                      {selectedChoices.includes(choice) && <span style={{ fontSize: '10px' }}>✓</span>}
+                    </div>
+                    <span>{choice}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -58,18 +58,13 @@ const UploadProcessContainer: React.FC<UploadProcessContainerProps> = ({
   handleDeleteConfirm
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div className="flex flex-col min-h-screen">
       <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       
-      <div style={{ display: 'flex', flex: 1 }}>
+      <div className="flex flex-1 relative">
         <Sidebar isSidebarOpen={isSidebarOpen} />
         
-        <main style={{ 
-          flex: 1, 
-          padding: '30px', 
-          backgroundColor: '#f8f9fa',
-          position: 'relative'
-        }}>
+        <main className={`flex-1 p-8 bg-[#f8f9fa] transition-all duration-300 ${isSidebarOpen ? 'ml-[240px]' : 'ml-0'}`}>
           <Notification 
             visible={notificationVisible} 
             type={notificationType} 
@@ -77,7 +72,7 @@ const UploadProcessContainer: React.FC<UploadProcessContainerProps> = ({
             onClose={() => setNotificationVisible(false)} 
           />
 
-          <h1 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Upload and Process</h1>
+          <h1 className="text-2xl font-semibold mb-6">Upload and Process</h1>
           
           {processingResult ? (
             <ProcessingResults 
@@ -102,14 +97,7 @@ const UploadProcessContainer: React.FC<UploadProcessContainerProps> = ({
         </main>
       </div>
       
-      <footer style={{ 
-        padding: '15px', 
-        textAlign: 'center', 
-        borderTop: '1px solid #e2e8f0',
-        fontSize: '0.875rem',
-        color: '#718096',
-        backgroundColor: 'white'
-      }}>
+      <footer className={`py-4 px-6 text-center border-t border-[#e2e8f0] text-sm text-[#718096] bg-white transition-all duration-300 ${isSidebarOpen ? 'ml-[240px]' : 'ml-0'}`}>
         Copyright 2025 KPMG. All Rights Reserved
       </footer>
       

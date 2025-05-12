@@ -16,30 +16,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
   }
 
   return (
-    <div style={{
-      backgroundColor: '#0a2e81',
-      width: '240px',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <div style={{ marginTop: '20px', padding: '10px 15px' }}>
+    <div className="fixed top-[64px] left-0 bottom-0 w-[240px] bg-[#0a2e81] flex flex-col z-10 h-[calc(100vh-64px)]">
+      <div className="flex-1 overflow-y-auto p-4">
         <Link 
           to="/upload" 
-          className="kpmg-sidebar-item" 
-          style={{ 
-            backgroundColor: pathname.includes('/upload') ? '#000000' : 'transparent',
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '12px 20px',
-            marginBottom: '8px',
-            borderRadius: '6px',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            textDecoration: 'none'
-          }}
+          className={`kpmg-sidebar-item rounded-md mb-2 ${pathname.includes('/upload') ? 'bg-black' : 'hover:bg-white/10'}`}
         >
           <File size={20} />
           <span>Upload and Process</span>
@@ -47,19 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
         
         <Link 
           to="/history" 
-          className="kpmg-sidebar-item" 
-          style={{ 
-            backgroundColor: pathname.includes('/history') ? '#000000' : 'transparent',
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '12px 20px',
-            borderRadius: '6px',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer',
-            textDecoration: 'none'
-          }}
+          className={`kpmg-sidebar-item rounded-md ${pathname.includes('/history') ? 'bg-black' : 'hover:bg-white/10'}`}
         >
           <History size={20} />
           <span>History</span>

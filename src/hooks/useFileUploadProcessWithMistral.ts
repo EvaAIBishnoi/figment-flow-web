@@ -1,7 +1,7 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileType, UploadedFile, ProcessingResult } from '../types';
-import MistralService from '../services/MistralService';
+import MistralService from '../backend/services/MistralService';
 
 // Create a mock file ID generator
 const generateFileId = () => `file-${Math.random().toString(36).substring(2, 15)}`;
@@ -15,10 +15,25 @@ export const useFileUploadProcessWithMistral = () => {
   const [notificationVisible, setNotificationVisible] = useState<boolean>(false);
   const [notificationType, setNotificationType] = useState<'success' | 'error'>('success');
   const [notificationMessage, setNotificationMessage] = useState<string>('');
+  const [apiKey, setApiKey] = useState<string>('');
+  const [mistralService, setMistralService] = useState<MistralService | null>(null);
   
-  // In a real application, this API key should come from environment variables or user input
-  // For demo purposes, we're using a placeholder
-  const mistralService = new MistralService('your-api-key-here');
+  // Initialize MistralService when API key is available
+  useEffect(() => {
+    // Load API key from localStorage on component mount
+    const storedApiKey = localStorage.getItem('mistral-api-key');
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+      setMistralService(new MistralService(storedApiKey));
+    }
+  }, []);
+
+  // Update MistralService when API key changes
+  useEffect(() => {
+    if (apiKey) {
+      setMistralService(new MistralService(apiKey));
+    }
+  }, [apiKey]);
 
   const handleFileUpload = (file: File) => {
     // Create a file object
@@ -63,7 +78,7 @@ export const useFileUploadProcessWithMistral = () => {
   };
 
   const handleProcessNotification = async () => {
-    if (!uploadedFile) return;
+    if (!uploadedFile || !mistralService) return;
 
     setIsProcessing(true);
     
@@ -111,6 +126,12 @@ export const useFileUploadProcessWithMistral = () => {
     setProcessingResult(null);
   };
 
+  const handleApiKeySet = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem('mistral-api-key', key);
+    setMistralService(new MistralService(key));
+  };
+
   return {
     selectedFileType,
     setSelectedFileType,
@@ -120,7 +141,7 @@ export const useFileUploadProcessWithMistral = () => {
     handleProcessNotification,
     isProcessing,
     processingResult,
-    isProcessButtonDisabled: !uploadedFile || uploadedFile.status !== 'uploaded',
+    isProcessButtonDisabled: !uploadedFile || uploadedFile.status !== 'uploaded' || !apiKey,
     handleUploadStart,
     uploadStarted,
     handleBack,
@@ -128,6 +149,8 @@ export const useFileUploadProcessWithMistral = () => {
     notificationVisible,
     notificationType,
     notificationMessage,
-    setNotificationVisible
+    setNotificationVisible,
+    apiKey,
+    handleApiKeySet
   };
 };

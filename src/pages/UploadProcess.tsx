@@ -1,9 +1,5 @@
 
 import React, { useState } from 'react';
-import { toast } from 'sonner';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import DeleteConfirmation from '../components/DeleteConfirmation';
 import { useFileUploadProcessWithMistral } from '../hooks/useFileUploadProcessWithMistral';
 import UploadProcessContainer from '../components/UploadProcessContainer';
 
@@ -28,7 +24,9 @@ const UploadProcess: React.FC = () => {
     notificationVisible,
     notificationType,
     notificationMessage,
-    setNotificationVisible
+    setNotificationVisible,
+    apiKey,
+    handleApiKeySet
   } = useFileUploadProcessWithMistral();
 
   const handleDeleteConfirm = () => {
@@ -69,6 +67,8 @@ const UploadProcess: React.FC = () => {
       showDeleteConfirmation={showDeleteConfirmation}
       handleDeleteCancel={handleDeleteCancel}
       handleDeleteConfirm={handleDeleteConfirm}
+      apiKey={apiKey}
+      handleApiKeySet={handleApiKeySet}
     />
   );
 };

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import FileTypeSelector from './FileTypeSelector';
 import FileUpload from './FileUpload';
 import ProcessButton from './ProcessButton';
@@ -17,6 +17,8 @@ interface UploadSectionProps {
   isProcessButtonDisabled: boolean;
   handleUploadStart: () => void;
   uploadStarted: boolean;
+  apiKey?: string;
+  handleApiKeySet?: (key: string) => void;
 }
 
 const UploadSection: React.FC<UploadSectionProps> = ({
@@ -29,25 +31,19 @@ const UploadSection: React.FC<UploadSectionProps> = ({
   isProcessing,
   isProcessButtonDisabled,
   handleUploadStart,
-  uploadStarted
+  uploadStarted,
+  apiKey,
+  handleApiKeySet
 }) => {
-  const [apiKey, setApiKey] = useState<string>('');
-  
-  // Load API key from localStorage on component mount
-  useEffect(() => {
-    const storedApiKey = localStorage.getItem('mistral-api-key');
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-    }
-  }, []);
-
-  const handleApiKeySet = (key: string) => {
-    setApiKey(key);
-  };
-
   return (
     <>
-      <ApiKeyInput onApiKeySet={handleApiKeySet} />
+      {handleApiKeySet && (
+        <ApiKeyInput 
+          onApiKeySet={handleApiKeySet}
+          label="Mistral API Key" 
+          placeholder="Enter your Mistral API key"
+        />
+      )}
       
       <div className="mb-6">
         <label className="block mb-2">Select file type</label>
@@ -71,7 +67,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
       <div>
         <ProcessButton 
           onClick={handleProcessNotification} 
-          disabled={isProcessButtonDisabled || !apiKey} 
+          disabled={isProcessButtonDisabled} 
           isProcessing={isProcessing}
         />
         {!apiKey && uploadedFile && (

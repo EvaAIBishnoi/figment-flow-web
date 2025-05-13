@@ -31,6 +31,8 @@ interface UploadProcessContainerProps {
   showDeleteConfirmation: boolean;
   handleDeleteCancel: () => void;
   handleDeleteConfirm: () => void;
+  apiKey?: string;
+  handleApiKeySet?: (key: string) => void;
 }
 
 const UploadProcessContainer: React.FC<UploadProcessContainerProps> = ({
@@ -55,7 +57,9 @@ const UploadProcessContainer: React.FC<UploadProcessContainerProps> = ({
   setNotificationVisible,
   showDeleteConfirmation,
   handleDeleteCancel,
-  handleDeleteConfirm
+  handleDeleteConfirm,
+  apiKey,
+  handleApiKeySet
 }) => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -92,6 +96,8 @@ const UploadProcessContainer: React.FC<UploadProcessContainerProps> = ({
               isProcessButtonDisabled={isProcessButtonDisabled}
               handleUploadStart={handleUploadStart}
               uploadStarted={uploadStarted}
+              apiKey={apiKey}
+              handleApiKeySet={handleApiKeySet}
             />
           )}
         </main>

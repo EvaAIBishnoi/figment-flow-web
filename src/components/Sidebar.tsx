@@ -1,40 +1,82 @@
 
 import React from 'react';
-import { File, History } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Upload, History, Settings, MessageSquare, FolderArchive, BookOpen } from 'lucide-react';
 
 interface SidebarProps {
   isSidebarOpen: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  if (!isSidebarOpen) {
-    return null;
-  }
-
+  const navigate = useNavigate();
+  
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+  
   return (
-    <div className="fixed top-[64px] left-0 bottom-0 w-[240px] bg-[#0a2e81] flex flex-col z-10 h-[calc(100vh-64px)] border-t border-[#0a2e81]">
-      <div className="flex-1 overflow-y-auto p-4">
-        <Link 
-          to="/upload" 
-          className={`kpmg-sidebar-item rounded-md mb-2 ${pathname.includes('/upload') ? 'bg-black' : 'hover:bg-white/10'}`}
-        >
-          <File size={20} />
-          <span>Upload and Process</span>
-        </Link>
-        
-        <Link 
-          to="/history" 
-          className={`kpmg-sidebar-item rounded-md ${pathname.includes('/history') ? 'bg-black' : 'hover:bg-white/10'}`}
-        >
-          <History size={20} />
-          <span>History</span>
-        </Link>
+    <aside 
+      className={`fixed top-0 left-0 h-full bg-[#0a2e81] text-white transition-all duration-300 z-10 mt-0 ${
+        isSidebarOpen ? 'w-[240px]' : 'w-0 overflow-hidden'
+      }`}
+    >
+      <div className="p-6 pt-16"> {/* Increased top padding to align with header */}
+        <nav>
+          <ul className="space-y-1">
+            <li>
+              <button 
+                onClick={() => handleNavigation('/upload')}
+                className="flex items-center w-full p-3 rounded-md hover:bg-[#071d52] transition-colors"
+              >
+                <Upload size={18} className="mr-3" />
+                <span>Upload and Process</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => handleNavigation('/history')}
+                className="flex items-center w-full p-3 rounded-md hover:bg-[#071d52] transition-colors"
+              >
+                <History size={18} className="mr-3" />
+                <span>Process History</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                className="flex items-center w-full p-3 rounded-md hover:bg-[#071d52] transition-colors"
+              >
+                <MessageSquare size={18} className="mr-3" />
+                <span>Communication</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                className="flex items-center w-full p-3 rounded-md hover:bg-[#071d52] transition-colors"
+              >
+                <FolderArchive size={18} className="mr-3" />
+                <span>Archive</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                className="flex items-center w-full p-3 rounded-md hover:bg-[#071d52] transition-colors"
+              >
+                <BookOpen size={18} className="mr-3" />
+                <span>Documentation</span>
+              </button>
+            </li>
+            <li>
+              <button 
+                className="flex items-center w-full p-3 rounded-md hover:bg-[#071d52] transition-colors"
+              >
+                <Settings size={18} className="mr-3" />
+                <span>Settings</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
-    </div>
+    </aside>
   );
 };
 

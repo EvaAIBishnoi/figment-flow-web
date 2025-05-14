@@ -14,22 +14,29 @@ class OCRService {
    */
   async extractFromNativePDF(file: File): Promise<string> {
     try {
-      // In a real implementation, this would:
-      // 1. Create a signed URL for the file
-      // 2. Send the file to Mistral's OCR service
-      // 3. Process and return the extracted data
+      console.log('Extracting data from PDF using Mistral OCR:', file.name);
       
-      console.log('Extracting data from PDF using Mistral OCR', file.name);
+      // In a real implementation, this would call the Mistral API
+      // with the PDF file to extract structured data
+      // Similar to the Python code: obj.extraction_from_native_pdfs(path)
       
       // Simulate processing time
       await this.simulateProcessing();
       
-      // Return mock extraction data
+      // Return mock extraction data that mimics what the Mistral API would return
+      // In production, this would be the actual API response
       return JSON.stringify({
         taxId: '123-45-6789',
         amount: '$5,000.00',
         dueDate: '2025-04-15',
-        reference: 'REF-123456'
+        reference: 'REF-123456',
+        requirements: [
+          'Annual financial statements for the past 3 years',
+          'Bank statements from January to December 2024',
+          'Records of all business transactions over $10,000',
+          'Documentation for all tax deductions claimed',
+          'Complete list of business assets and liabilities'
+        ]
       });
     } catch (error) {
       console.error('Error extracting from PDF:', error);

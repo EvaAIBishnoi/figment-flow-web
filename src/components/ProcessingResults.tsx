@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Calendar as CalendarIcon, X, Check, ChevronDown } from 'lucide-react';
 import { ProcessingResult } from '../types';
@@ -279,7 +278,27 @@ const ProcessingResults: React.FC<ProcessingResultsProps> = ({ result, onBack, o
         </div>
       </div>
 
-      {/* Response choices section - Updated to match the provided design */}
+      {/* Requirements section */}
+      {result.requirements && result.requirements.length > 0 && (
+        <div style={{ 
+          border: '1px solid #e2e8f0', 
+          borderRadius: '0.375rem', 
+          padding: '1.5rem',
+          backgroundColor: 'white',
+          marginBottom: '1.5rem'
+        }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '1rem' }}>Required Documents</h3>
+          <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+            {result.requirements.map((requirement, index) => (
+              <li key={index} style={{ marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                {requirement}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Response choices section */}
       <div style={{ 
         border: '1px solid #e2e8f0', 
         borderRadius: '0.375rem', 

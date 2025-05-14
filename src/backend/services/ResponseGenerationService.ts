@@ -27,10 +27,19 @@ class ResponseGenerationService {
       // Parse the extractions to get relevant data
       const extractionData = JSON.parse(extractions);
       
-      // Return mock response
+      // Build requirements list if available
+      let requirementsList = '';
+      if (extractionData.requirements && extractionData.requirements.length > 0) {
+        requirementsList = '\n\nThe following documents are required:\n';
+        extractionData.requirements.forEach((req: string, index: number) => {
+          requirementsList += `${index + 1}. ${req}\n`;
+        });
+      }
+      
+      // Return mock response with requirements included
       return {
         subject: `RE: Tax Audit Request Confirmation (Ref: ${extractionData.reference || 'N/A'})`,
-        body: `Dear Tax Authority,\n\nWe have successfully received your audit request (Reference: ${extractionData.reference || 'N/A'}) and are currently working on preparing the requested documents. We will provide all required files as soon as possible.\n\nThank you for your patience.\n\nBest regards,\nKPMG Tax Department`
+        body: `Dear Tax Authority,\n\nWe have successfully received your audit request (Reference: ${extractionData.reference || 'N/A'}) and are currently working on preparing the requested documents. We will provide all required files as soon as possible.${requirementsList}\n\nThank you for your patience.\n\nBest regards,\nKPMG Tax Department`
       };
     } catch (error) {
       console.error('Error generating email response:', error);

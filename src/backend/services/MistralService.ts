@@ -51,6 +51,7 @@ class MistralService {
           date: extractions.dueDate || '',
           reference: extractions.reference || ''
         },
+        requirements: extractions.requirements || [],
         generatedResponse
       };
     } catch (error) {

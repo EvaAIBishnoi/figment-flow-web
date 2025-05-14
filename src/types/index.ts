@@ -53,6 +53,7 @@ export interface ProcessingResult {
     date: string;
     reference: string;
   };
+  requirements?: string[];
   generatedResponse: {
     subject: string;
     body: string;

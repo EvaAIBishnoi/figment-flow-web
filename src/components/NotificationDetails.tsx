@@ -2,12 +2,18 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { NotificationDetail } from '../types';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface NotificationDetailsProps {
   notifications: NotificationDetail[];
+  onGenerateResponseClick?: () => void;
 }
 
-const NotificationDetails: React.FC<NotificationDetailsProps> = ({ notifications }) => {
+const NotificationDetails: React.FC<NotificationDetailsProps> = ({ 
+  notifications,
+  onGenerateResponseClick 
+}) => {
   const [selectedNotification, setSelectedNotification] = useState<string | null>(
     notifications.length > 0 ? notifications[0].id : null
   );
@@ -24,55 +30,26 @@ const NotificationDetails: React.FC<NotificationDetailsProps> = ({ notifications
       return 'Select details';
     }
 
-    const index = notifications.findIndex(n => n.id === selectedNotification);
-    if (index !== -1) {
-      return `${notification.id} - Audit Request (2025-04-30 15:07:28)`;
-    }
-    
-    return 'Select details';
+    return `${notification.id} - Audit Request (2025-04-30 15:07:28)`;
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+    <div className="space-y-6">
+      <div>
+        <label className="text-sm mb-2 block">
           Select notification to view details
         </label>
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '100%',
-              padding: '0.75rem 1rem',
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '0.375rem',
-              cursor: 'pointer',
-              fontSize: '0.875rem'
-            }}
+            className="flex justify-between items-center w-full p-3 bg-white border border-gray-200 rounded-md text-sm"
           >
             <span>{getDropdownLabel()}</span>
             <ChevronDown size={16} />
           </button>
 
           {isDropdownOpen && (
-            <div style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              width: '100%',
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '0.375rem',
-              marginTop: '0.25rem',
-              zIndex: 10,
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-              maxHeight: '200px',
-              overflowY: 'auto'
-            }}>
+            <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md mt-1 z-10 shadow-md max-h-[200px] overflow-y-auto">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
@@ -80,12 +57,9 @@ const NotificationDetails: React.FC<NotificationDetailsProps> = ({ notifications
                     setSelectedNotification(notification.id);
                     setIsDropdownOpen(false);
                   }}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    cursor: 'pointer',
-                    backgroundColor: notification.id === selectedNotification ? '#f7fafc' : 'transparent',
-                    fontSize: '0.875rem'
-                  }}
+                  className={`p-3 cursor-pointer hover:bg-gray-50 text-sm ${
+                    notification.id === selectedNotification ? 'bg-gray-50' : ''
+                  }`}
                 >
                   {`${notification.id} - Audit Request (2025-04-30 15:07:28)`}
                 </div>
@@ -96,85 +70,63 @@ const NotificationDetails: React.FC<NotificationDetailsProps> = ({ notifications
       </div>
 
       {notification && (
-        <div>
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '1.5rem',
-            marginBottom: '1.5rem'
-          }}>
-            <div style={{ 
-              border: '1px solid #e2e8f0', 
-              borderRadius: '0.375rem', 
-              padding: '1rem',
-              backgroundColor: 'white'
-            }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '1rem' }}>Content</h3>
-              <pre style={{ 
-                whiteSpace: 'pre-wrap', 
-                fontFamily: 'inherit', 
-                fontSize: '0.875rem', 
-                margin: 0,
-                lineHeight: 1.5
-              }}>
-                {`OFFICIAL AUDIT DOCUMENT REQUEST
-===========================
-AUDIT NOTIFICATION ID: AUD-836782
-DATE OF ISSUE: 2025-04-22
-TAXPAYER DETAILS:
------------------
-Name: Garrett Riley
-Tax Identification Number: TX79426243`}
+        <div className="space-y-6">
+          <div className="flex gap-6">
+            <div className="flex-1 p-4 border border-gray-200 rounded-md bg-white">
+              <h3 className="text-sm font-medium mb-4">Original content</h3>
+              <pre className="whitespace-pre-wrap font-sans text-sm leading-normal">
+                {notification.content}
               </pre>
             </div>
             
-            <div style={{ 
-              border: '1px solid #e2e8f0', 
-              borderRadius: '0.375rem', 
-              padding: '1rem',
-              backgroundColor: 'white'
-            }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '1rem' }}>Generated Response</h3>
-              <div style={{ fontSize: '0.875rem', lineHeight: 1.5 }}>
-                <p style={{ margin: '0 0 0.75rem 0' }}>Subject: Response to Audit Request</p>
-                <p style={{ margin: '0 0 0.75rem 0' }}>Dear Tax Authority,</p>
-                <p style={{ margin: '0 0 0.75rem 0' }}>
+            <div className="flex-1 p-4 border border-gray-200 rounded-md bg-white">
+              <h3 className="text-sm font-medium mb-4">Summary</h3>
+              <div className="text-sm leading-relaxed">
+                <p className="mb-3">Subject: Response to Audit Request</p>
+                <p className="mb-3">Dear Tax Authority,</p>
+                <p className="mb-3">
                   I acknowledge receipt of your audit request with reference dated.
                 </p>
-                <p style={{ margin: '0 0 0.75rem 0' }}>
+                <p className="mb-3">
                   I am gathering the requested documents and information and will provide them by the specified deadline. If I need any clarification or additional time, I will contact your office promptly.
                 </p>
               </div>
             </div>
           </div>
 
-          <div style={{ 
-            border: '1px solid #e2e8f0', 
-            borderRadius: '0.375rem', 
-            padding: '1rem',
-            backgroundColor: 'white'
-          }}>
-            <h3 style={{ fontSize: '0.875rem', fontWeight: '500', marginBottom: '1rem' }}>Extracted entities</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: '500', borderBottom: '1px solid #e2e8f0' }}>ID</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: '500', borderBottom: '1px solid #e2e8f0' }}>Amount (Rs.)</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: '500', borderBottom: '1px solid #e2e8f0' }}>Date</th>
-                  <th style={{ padding: '0.75rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: '500', borderBottom: '1px solid #e2e8f0' }}>Reference</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="p-4 border border-gray-200 rounded-md bg-white">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-medium">Extracted entities</h3>
+              {onGenerateResponseClick && (
+                <Button 
+                  variant="outline" 
+                  className="text-[#0a2e81] border-[#0a2e81] hover:bg-[#e0e8f7] hover:text-[#0a2e81]"
+                  onClick={onGenerateResponseClick}
+                >
+                  Generated response
+                </Button>
+              )}
+            </div>
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="font-medium text-sm">ID</TableHead>
+                  <TableHead className="font-medium text-sm">Amount (Rs.)</TableHead>
+                  <TableHead className="font-medium text-sm">Date</TableHead>
+                  <TableHead className="font-medium text-sm">Reference</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {notification.extractedEntities.map((entity) => (
-                  <tr key={entity.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{entity.id}</td>
-                    <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{entity.amount}</td>
-                    <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{entity.date}</td>
-                    <td style={{ padding: '0.75rem', fontSize: '0.875rem' }}>{entity.reference || '-'}</td>
-                  </tr>
+                  <TableRow key={entity.id} className="hover:bg-gray-50">
+                    <TableCell className="text-sm">{entity.id}</TableCell>
+                    <TableCell className="text-sm">{entity.amount}</TableCell>
+                    <TableCell className="text-sm">{entity.date}</TableCell>
+                    <TableCell className="text-sm">{entity.reference || '-'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}

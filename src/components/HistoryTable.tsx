@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ProcessedItem } from '../types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface HistoryTableProps {
   items: ProcessedItem[];
@@ -29,60 +30,42 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ items, onSelectItem }) => {
 
   return (
     <div>
-      <table style={{ 
-        width: '100%', 
-        borderCollapse: 'collapse', 
-        marginTop: '1rem',
-        backgroundColor: 'white'
-      }}>
-        <thead>
-          <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-            <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: '500', fontSize: '0.875rem', color: '#4b5563' }}>ID</th>
-            <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: '500', fontSize: '0.875rem', color: '#4b5563' }}>Timestamp</th>
-            <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: '500', fontSize: '0.875rem', color: '#4b5563' }}>Category</th>
-            <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: '500', fontSize: '0.875rem', color: '#4b5563' }}>Input type</th>
-            <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: '500', fontSize: '0.875rem', color: '#4b5563' }}>Confidence</th>
-            <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: '500', fontSize: '0.875rem', color: '#4b5563' }}>Reference</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="font-medium text-sm">ID</TableHead>
+            <TableHead className="font-medium text-sm">Timestamp</TableHead>
+            <TableHead className="font-medium text-sm">Category</TableHead>
+            <TableHead className="font-medium text-sm">Input type</TableHead>
+            <TableHead className="font-medium text-sm">Confidence</TableHead>
+            <TableHead className="font-medium text-sm">Reference</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {visibleItems.map((item) => (
-            <tr 
+            <TableRow 
               key={item.id} 
               onClick={() => onSelectItem(item.id)} 
-              style={{ 
-                borderBottom: '1px solid #e2e8f0',
-                cursor: 'pointer'
-              }}
+              className="cursor-pointer hover:bg-gray-50"
             >
-              <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{item.id}</td>
-              <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{item.timestamp}</td>
-              <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{item.category}</td>
-              <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{item.inputType}</td>
-              <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{item.confidence}</td>
-              <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{item.reference}</td>
-            </tr>
+              <TableCell className="text-sm">{item.id}</TableCell>
+              <TableCell className="text-sm">{item.timestamp}</TableCell>
+              <TableCell className="text-sm">{item.category}</TableCell>
+              <TableCell className="text-sm">{item.inputType}</TableCell>
+              <TableCell className="text-sm">{item.confidence}</TableCell>
+              <TableCell className="text-sm">{item.reference}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
 
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        padding: '1rem',
-        fontSize: '0.875rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div className="flex items-center justify-between p-4 text-sm">
+        <div className="flex items-center gap-2">
           <span>ROWS PER</span>
           <select 
             value={rowsPerPage} 
             onChange={handleRowsPerPageChange}
-            style={{
-              padding: '0.25rem 0.5rem',
-              borderRadius: '0.25rem',
-              border: '1px solid #e2e8f0'
-            }}
+            className="px-2 py-1 rounded border border-gray-200"
           >
             <option value={5}>5</option>
             <option value={10}>10</option>
@@ -90,22 +73,18 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ items, onSelectItem }) => {
           </select>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span style={{ marginRight: '0.5rem' }}>
+        <div className="flex items-center">
+          <span className="mr-2">
             PAGE {currentPage} OF {totalPages}
           </span>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <div className="flex items-center gap-1">
             <button 
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
-              style={{
-                padding: '0.25rem 0.5rem',
-                color: currentPage === 1 ? '#d1d5db' : '#0a2e81',
-                border: 'none',
-                backgroundColor: 'transparent',
-                cursor: currentPage === 1 ? 'default' : 'pointer'
-              }}
+              className={`px-2 py-1 border-none bg-transparent ${
+                currentPage === 1 ? 'text-gray-300 cursor-default' : 'text-[#0a2e81] cursor-pointer'
+              }`}
             >
               First
             </button>
@@ -113,16 +92,9 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ items, onSelectItem }) => {
             <button 
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              style={{
-                padding: '0.25rem 0.5rem',
-                color: currentPage === 1 ? '#d1d5db' : '#0a2e81',
-                border: 'none',
-                backgroundColor: 'transparent',
-                cursor: currentPage === 1 ? 'default' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+              className={`flex items-center justify-center px-2 py-1 border-none bg-transparent ${
+                currentPage === 1 ? 'text-gray-300 cursor-default' : 'text-[#0a2e81] cursor-pointer'
+              }`}
             >
               <ChevronLeft size={16} />
             </button>
@@ -145,19 +117,11 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ items, onSelectItem }) => {
                   <button 
                     key={i}
                     onClick={() => handlePageChange(pageNum)}
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: currentPage === pageNum ? '1px solid #0a2e81' : 'none',
-                      borderRadius: '50%',
-                      backgroundColor: currentPage === pageNum ? 'transparent' : 'transparent',
-                      color: '#0a2e81',
-                      cursor: 'pointer',
-                      fontSize: '0.875rem'
-                    }}
+                    className={`w-7 h-7 flex items-center justify-center rounded-full ${
+                      currentPage === pageNum 
+                        ? 'border border-[#0a2e81] bg-transparent text-[#0a2e81]' 
+                        : 'border-none bg-transparent text-[#0a2e81]'
+                    } cursor-pointer text-sm`}
                   >
                     {pageNum}
                   </button>
@@ -167,22 +131,15 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ items, onSelectItem }) => {
             })}
             
             {totalPages > 5 && currentPage < totalPages - 2 && (
-              <span style={{ color: '#4b5563' }}>...</span>
+              <span className="text-gray-600">...</span>
             )}
             
             <button 
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              style={{
-                padding: '0.25rem 0.5rem',
-                color: currentPage === totalPages ? '#d1d5db' : '#0a2e81',
-                border: 'none',
-                backgroundColor: 'transparent',
-                cursor: currentPage === totalPages ? 'default' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+              className={`flex items-center justify-center px-2 py-1 border-none bg-transparent ${
+                currentPage === totalPages ? 'text-gray-300 cursor-default' : 'text-[#0a2e81] cursor-pointer'
+              }`}
             >
               <ChevronRight size={16} />
             </button>
@@ -190,13 +147,9 @@ const HistoryTable: React.FC<HistoryTableProps> = ({ items, onSelectItem }) => {
             <button 
               onClick={() => handlePageChange(totalPages)}
               disabled={currentPage === totalPages}
-              style={{
-                padding: '0.25rem 0.5rem',
-                color: currentPage === totalPages ? '#d1d5db' : '#0a2e81',
-                border: 'none',
-                backgroundColor: 'transparent',
-                cursor: currentPage === totalPages ? 'default' : 'pointer'
-              }}
+              className={`px-2 py-1 border-none bg-transparent ${
+                currentPage === totalPages ? 'text-gray-300 cursor-default' : 'text-[#0a2e81] cursor-pointer'
+              }`}
             >
               Last
             </button>

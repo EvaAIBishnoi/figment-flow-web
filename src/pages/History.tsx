@@ -5,17 +5,22 @@ import Sidebar from '../components/Sidebar';
 import HistoryTable from '../components/HistoryTable';
 import NotificationDetails from '../components/NotificationDetails';
 import { ProcessedItem, NotificationDetail } from '../types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { X, Download } from 'lucide-react';
 
 const History: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'processed' | 'details'>('processed');
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [showGeneratedResponse, setShowGeneratedResponse] = useState<boolean>(false);
   
   // Sample data - in a real app, this would come from your API
   const processedItems: ProcessedItem[] = [
     {
       id: 'Occ60ead',
-      timestamp: '2025-05-20 15:07:28',
+      timestamp: '2025-04-30 15:07:28',
       category: 'Audit Request',
       inputType: 'File',
       confidence: '40%',
@@ -83,82 +88,154 @@ const History: React.FC = () => {
     setActiveTab('details');
   };
 
+  const getFullResponseContent = () => {
+    if (!selectedItemId) return null;
+
+    const notification = notificationDetails.find(n => n.id === selectedItemId);
+    if (!notification) return null;
+
+    return (
+      <div className="space-y-4">
+        <div>
+          <p>To: The Assessing Officer</p>
+          <p>Tax Department / Income Tax Office</p>
+          <p>Bangalore, Karnataka, India</p>
+          <p>Date: 08-05-2025</p>
+        </div>
+        <p>Subject: Response to Tax Notification Reference No. [{selectedItemId}]</p>
+        <p>Dear Sir/Madam,</p>
+        <p>
+          I am writing in reference to the tax notification dated [Insert Date] with
+          reference number [Insert Notification Number], which pertains to the
+          assessment year [Insert AY] and highlights certain discrepancies in the
+          return of income filed under PAN [Insert PAN]. I appreciate the
+          department's diligence in ensuring tax compliance and transparency.
+        </p>
+        <p>
+          Upon receiving the notification, I have reviewed the contents carefully and
+          would like to address the points raised therein with clarifications and
+          supporting documentation as detailed below:
+        </p>
+        <div>
+          <p className="font-medium">1. Discrepancy in Reported Income</p>
+          <p>
+            The notice highlights a variation in the income declared under "Other
+            Sources" compared to information received by the department. The
+            amount declared in my ITR was ₹[X], whereas the department notes ₹[Y].
+            Upon investigation, I confirm that the income from interest on fixed
+            deposits amounting to ₹[Y] had inadvertently not been included under the
+            "Income from Other Sources" due to delayed receipt of the bank's annual
+            interest certificate. I regret this oversight and acknowledge the shortfall. A
+            revised computation sheet reflecting the correct interest income is
+            enclosed for your reference.
+          </p>
+        </div>
+        <div>
+          <p className="font-medium">2. Tax Deducted at Source (TDS) Mismatch</p>
+          <p>
+            It has also been pointed out that the TDS claimed does not match the TDS
+            credited as per Form 26AS.
+            This discrepancy is primarily due to timing differences in quarterly TDS
+            credits and a correction statement filed late by [Bank/Organization Name].
+            The mismatch is now reconciled in the latest Form 26AS (enclosed), which
+            supports the TDS claimed in the return. A reconciliation sheet is attached
+            for detailed comparison.
+          </p>
+        </div>
+        <div>
+          <p className="font-medium">3. Request for Rectification and Adjustment</p>
+          <p>
+            Given the above, I kindly request that the assessment be rectified under
+            Section 154 (if applicable), and the necessary adjustments be made to
+            reflect the revised income and tax liability. If any balance tax is payable
+            after reassessment, I am willing to pay the amount promptly upon
+            receiving the revised computation from your end.
+          </p>
+          <p>Supporting Documents Enclosed:</p>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div className="flex flex-col min-h-screen">
       <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       
-      <div style={{ display: 'flex', flex: 1 }}>
+      <div className="flex flex-1">
         <Sidebar isSidebarOpen={isSidebarOpen} />
         
-        <main style={{ 
-          flex: 1, 
-          padding: '30px', 
-          backgroundColor: '#f8f9fa'
-        }}>
-          <h1 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>History</h1>
+        <main className="flex-1 p-8 bg-[#f8f9fa]">
+          <h1 className="text-2xl font-semibold mb-6">History</h1>
           
-          <div style={{ marginBottom: '1.5rem' }}>
-            <div style={{ 
-              display: 'flex', 
-              borderBottom: '1px solid #e2e8f0' 
-            }}>
-              <button
-                onClick={() => setActiveTab('processed')}
-                className={activeTab === 'processed' ? 'kpmg-tab-active' : ''}
-                style={{
-                  padding: '12px 16px',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontWeight: activeTab === 'processed' ? '500' : 'normal',
-                  borderBottom: activeTab === 'processed' ? '2px solid #0a2e81' : 'none',
-                  marginBottom: activeTab === 'processed' ? '-1px' : '0'
-                }}
-              >
-                Processed data
-              </button>
+          <div className="bg-[#f8f9fa] rounded-md">
+            <Tabs 
+              defaultValue="processed" 
+              value={activeTab} 
+              onValueChange={(value) => setActiveTab(value as 'processed' | 'details')}
+              className="w-full"
+            >
+              <TabsList className="bg-[#f1f3f5] mb-6 p-0 h-auto rounded-none w-full">
+                <TabsTrigger 
+                  value="processed" 
+                  className="px-4 py-3 rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#0a2e81] data-[state=active]:shadow-none"
+                >
+                  Processed data
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="details" 
+                  className="px-4 py-3 rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#0a2e81] data-[state=active]:shadow-none"
+                >
+                  Notification details
+                </TabsTrigger>
+              </TabsList>
               
-              <button
-                onClick={() => setActiveTab('details')}
-                className={activeTab === 'details' ? 'kpmg-tab-active' : ''}
-                style={{
-                  padding: '12px 16px',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontWeight: activeTab === 'details' ? '500' : 'normal',
-                  borderBottom: activeTab === 'details' ? '2px solid #0a2e81' : 'none',
-                  marginBottom: activeTab === 'details' ? '-1px' : '0'
-                }}
-              >
-                Notification details
-              </button>
-            </div>
-          </div>
-          
-          <div style={{ backgroundColor: 'white', borderRadius: '0.375rem', padding: '1.5rem' }}>
-            {activeTab === 'processed' ? (
-              <HistoryTable 
-                items={processedItems} 
-                onSelectItem={handleSelectItem} 
-              />
-            ) : (
-              <NotificationDetails notifications={notificationDetails} />
-            )}
+              <TabsContent value="processed" className="bg-white rounded-md p-6 mt-0 border border-gray-200">
+                <HistoryTable 
+                  items={processedItems} 
+                  onSelectItem={handleSelectItem} 
+                />
+              </TabsContent>
+              
+              <TabsContent value="details" className="bg-white rounded-md p-6 mt-0 border border-gray-200">
+                <NotificationDetails 
+                  notifications={notificationDetails} 
+                  onGenerateResponseClick={() => setShowGeneratedResponse(true)}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
       </div>
       
-      <footer style={{ 
-        padding: '15px', 
-        textAlign: 'center', 
-        borderTop: '1px solid #e2e8f0',
-        fontSize: '0.875rem',
-        color: '#718096',
-        backgroundColor: 'white'
-      }}>
+      <footer className="p-4 text-center border-t border-gray-200 text-sm text-gray-500 bg-white">
         Copyright 2025 KPMG. All Rights Reserved
       </footer>
+
+      <Dialog open={showGeneratedResponse} onOpenChange={setShowGeneratedResponse}>
+        <DialogContent className="max-w-3xl p-0 gap-0">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <h2 className="text-xl font-medium">Generated response</h2>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setShowGeneratedResponse(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="p-4 border-b border-gray-200">
+            <Button variant="outline" className="gap-2">
+              <Download className="h-4 w-4" />
+              Download the response
+            </Button>
+          </div>
+          
+          <div className="p-6 max-h-[60vh] overflow-y-auto">
+            {getFullResponseContent()}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
